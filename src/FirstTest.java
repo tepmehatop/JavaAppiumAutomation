@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -39,7 +40,7 @@ public class FirstTest {
     }
 
     @Test
-    public void checkSearchFieldText()
+    public void checkCancelSearch()
     {
 
         waitForElementAndClick(
@@ -48,37 +49,76 @@ public class FirstTest {
                 5
         );
 
-
-        WebElement searchFieldPlaceholderPresent =  waitForElementPresent(
-                By.xpath("//*[contains(@text, 'Search…')]"),
-                "Placeholder of Search field not found"
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                "BMW",
+                "Can't find input field",
+                5
         );
 
-        String search_field = searchFieldPlaceholderPresent.getAttribute("text");
+        assert checkFindedElements(
+                By.id("org.wikipedia:id/page_list_item_container"),
+                "Finded elements less then 1",
+                5
+        ).size() >= 1;
 
-        Assert.assertEquals(
-                "Unexpected placeholder in search field",
-                "Search…",
-                search_field);
+        waitForElementAndClick(
+                By.className("android.widget.ImageButton"),
+                "Can't find cancel button",
+                5
+        );
+
+        checkElemenyNotPresent(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Close search button is visible",
+                5
+
+        );
+
 
     }
 
-    private WebElement waitForElementAndClick(By by, String error_message, long timeoutWaitSeconds) {
-
+    private WebElement waitForElementAndClick(By by, String error_message, long timeoutWaitSeconds)
+    {
         WebElement element = waitForElementPresent(by, error_message, timeoutWaitSeconds);
         element.click();
         return element;
     }
 
-    public WebElement waitForElementPresent(By by, String error_message, long timeInSeconds)
+    private WebElement waitForElementAndSendKeys(By by,String search_text, String error_message, long timeoutWaitSeconds)
     {
-        WebDriverWait wait = new WebDriverWait(driver, timeInSeconds);
+        WebElement element = waitForElementPresent(by, error_message, timeoutWaitSeconds);
+        element.sendKeys(search_text);
+        return element;
+    }
+
+
+    private List checkFindedElements(By by, String error_message, long timeoutWaitSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutWaitSeconds);
+        wait.withMessage(error_message + "\n");
+        List elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+        return elements;
+    }
+
+
+    private boolean checkElemenyNotPresent (By by, String error_message, long timeoutWaitSeconds)
+    {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutWaitSeconds);
+        wait.withMessage(error_message + "\n");
+        return wait.until(
+                ExpectedConditions.invisibilityOfElementLocated(by)
+        );
+    }
+
+
+    public WebElement waitForElementPresent(By by, String error_message, long timeoutWaitSeconds)
+    {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutWaitSeconds);
         wait.withMessage(error_message + "\n");
                 return wait.until(
                         ExpectedConditions.presenceOfElementLocated(by)
                 );
     }
-
 
     public WebElement waitForElementPresent(By by, String error_message)
     {
