@@ -40,7 +40,7 @@ public class FirstTest {
     }
 
     @Test
-    public void checkCancelSearch()
+    public void checkFindedTitle()
     {
 
         waitForElementAndClick(
@@ -56,25 +56,11 @@ public class FirstTest {
                 5
         );
 
-        assert checkFindedElements(
-                By.id("org.wikipedia:id/page_list_item_container"),
-                "Finded elements less then 1",
-                5
-        ).size() >= 1;
 
-        waitForElementAndClick(
-                By.className("android.widget.ImageButton"),
-                "Can't find cancel button",
-                5
+        checkContainsTextFindedElements(
+                By.id("org.wikipedia:id/page_list_item_title"),
+                "BMW"
         );
-
-        checkElemenyNotPresent(
-                By.id("org.wikipedia:id/search_src_text"),
-                "Close search button is visible",
-                5
-
-        );
-
 
     }
 
@@ -93,23 +79,13 @@ public class FirstTest {
     }
 
 
-    private List checkFindedElements(By by, String error_message, long timeoutWaitSeconds) {
-        WebDriverWait wait = new WebDriverWait(driver, timeoutWaitSeconds);
-        wait.withMessage(error_message + "\n");
-        List elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
-        return elements;
-    }
-
-
-    private boolean checkElemenyNotPresent (By by, String error_message, long timeoutWaitSeconds)
+    private void checkContainsTextFindedElements (By by, String finedText)
     {
-        WebDriverWait wait = new WebDriverWait(driver, timeoutWaitSeconds);
-        wait.withMessage(error_message + "\n");
-        return wait.until(
-                ExpectedConditions.invisibilityOfElementLocated(by)
-        );
-    }
+        String getTitleText = driver.findElement(by).getText();
+        Assert.assertTrue("Text not found!", getTitleText.contains(finedText));
+        return;
 
+    }
 
     public WebElement waitForElementPresent(By by, String error_message, long timeoutWaitSeconds)
     {
