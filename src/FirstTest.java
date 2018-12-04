@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.net.URL;
 import java.util.List;
 
+
 public class FirstTest {
 
     private AppiumDriver driver;
@@ -81,8 +82,10 @@ public class FirstTest {
 
     private void checkContainsTextFindedElements (By by, String finedText)
     {
-        String getTitleText = driver.findElement(by).getText();
-        Assert.assertTrue("Text not found!", getTitleText.contains(finedText));
+        List<WebElement> elements = driver.findElements(by);
+        for(WebElement element1: elements) {
+            Assert.assertTrue(element1.getText().contains(finedText));
+        }
         return;
 
     }
