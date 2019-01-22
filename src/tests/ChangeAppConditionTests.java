@@ -47,7 +47,6 @@ public class ChangeAppConditionTests extends CoreTestCase
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
         this.backgroundApp(2);
-        driver.runAppInBackground(2);
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
     }
 }
